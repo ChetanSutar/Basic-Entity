@@ -1,4 +1,5 @@
-﻿using EmployeeAdminPortal.Data;
+﻿using EmployeeAdminPortal.CustomeActionFiltars;
+using EmployeeAdminPortal.Data;
 using EmployeeAdminPortal.Models;
 using EmployeeAdminPortal.Models.Entities;
 using Microsoft.AspNetCore.Http;
@@ -35,26 +36,37 @@ namespace EmployeeAdminPortal.Controllers
         }
 
         [HttpPost]
+        [ValidateModel]//another mothod for validate
         public IActionResult AddEmp(AddEmpDTO addEmpDTO)
         {
-            var empEntity = new Employee()
-            {
-                Name = addEmpDTO.Name,
-                Email = addEmpDTO.Email,
-                Phone = addEmpDTO.Phone,
-                Salary = addEmpDTO.Salary
 
-            };
+           
+
+                var empEntity = new Employee()
+                {
+                    Name = addEmpDTO.Name,
+                    Email = addEmpDTO.Email,
+                    Phone = addEmpDTO.Phone,
+                    Salary = addEmpDTO.Salary
+
+                };
 
 
-            dbContext.Employees.Add(empEntity);
-            dbContext.SaveChanges();
-            return Ok(empEntity);
+                dbContext.Employees.Add(empEntity);
+                dbContext.SaveChanges();
+                return Ok(empEntity);
+           
         }
+
+
+
 
         [HttpPut ("{ID:guid}")]
         public IActionResult UpdateEmp(Guid ID , AddEmpDTO UpEmp)
         {
+            // mothod for validate
+            if (!ModelState.IsValid) {  return BadRequest(); }
+
             var Emp = dbContext.Employees.Find( ID);
             if(Emp == null) { return NotFound(); }
 
